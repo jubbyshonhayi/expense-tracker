@@ -1,3 +1,5 @@
+from expenses import add_expense
+
 def main():
     while True:
         print("====== EXPENSE TRACKER ======")
@@ -10,7 +12,8 @@ def main():
         choice = input("Enter choice: ")
         
         if choice == "1":
-            print("Adding Expense...\n")
+            add_expense()
+
             
         elif choice == "2":
             print("Viewing Expenses...\n")
