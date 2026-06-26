@@ -17,6 +17,6 @@ def ensure_csv_exists():
             with open(CSV_FILE, "w", newline="", encoding="utf-8") as file:
                 writer = csv.writer(file)
                 writer.writerow(HEADERS)
-                
+            
         except OSError:
             print("Erro: Could not create the expenses.csv")

@@ -1,4 +1,4 @@
-from expenses import add_expense
+from expenses import add_expense, view_expenses
 
 def main():
     while True:
@@ -16,7 +16,7 @@ def main():
 
             
         elif choice == "2":
-            print("Viewing Expenses...\n")
+            view_expenses()
 
         elif choice == "3":
             print("Viewing Category Summary...\n")

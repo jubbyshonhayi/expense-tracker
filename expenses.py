@@ -42,6 +42,36 @@ def add_expense():
     except OSError:
         print("Failed to add expense\n")
 
-    
 
+def view_expenses():
 
+    try:
+        print("\n=====EXPENSES=====\n")
+        
+        with open(CSV_FILE, "r", encoding="utf-8") as file:
+            reader = csv.reader(file)
+            try:
+                next(reader)
+            except StopIteration:
+                print("No expenses found.")
+                return
+
+            found_expenses = False
+
+            print(f"{'Date':<12} {'Category':<15} {'Description':<30} {'Amount':>10}")
+            print("-" * 70)
+            
+            for row in reader:
+
+                if len(row) != 4: #handle a scenario where user(or even I) manually edited the csv
+                    continue
+                
+                found_expenses = True
+
+                print(f"{row[0]:<12} {row[1]:<15} {row[2]:<30} {float(row[3]):>10.2f}")
+
+            if not found_expenses:
+                print("No Expenses found.")
+
+    except OSError:
+        print("Error: Unable to read expenses.csv.")
