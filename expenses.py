@@ -2,6 +2,7 @@ import csv
 from datetime import datetime
 from utils import ensure_csv_exists, CSV_FILE
 
+
 def add_expense():
 
     """Collect an expense from the user and save it to the CSV file."""
@@ -65,7 +66,7 @@ def view_expenses():
 
                 if len(row) != 4: #handle a scenario where user(or even I) manually edited the csv
                     continue
-                
+
                 found_expenses = True
 
                 print(f"{row[0]:<12} {row[1]:<15} {row[2]:<30} {float(row[3]):>10.2f}")
@@ -75,3 +76,54 @@ def view_expenses():
 
     except OSError:
         print("Error: Unable to read expenses.csv.")
+
+
+def category_summary():
+     
+    """Display the total amount spent in each category"""
+
+    totals = {}
+
+    print("\n========CATEGORY SUMMARY=======\n")
+
+    with open(CSV_FILE, "r", encoding="utf-8") as file:
+        reader = csv.reader(file)
+         
+        # skip the header
+        try:
+            next(reader)
+        except StopIteration:
+            print("No expenses found.")
+            return
+
+        for row in reader:
+
+            if len(row) != 4: #handle a scenario where user(or even I) manually edited the csv
+                continue
+    
+            category = row[1]
+            amount = float(row[3])
+
+            if category in totals:
+                totals[category] += amount
+            else:
+                totals[category] = amount
+
+        if not totals:
+            print("No Categories found!")
+            return
+        
+        print(f"{'Category':<20} {'Amount':>10}")
+        print("-" *30)
+        
+        for category, total in sorted(totals.items()):
+            print(f"{category:<20} {total:>10.2f}")
+
+        
+        grand_total = sum(totals.values())
+
+        print("-" * 30)
+        print(f"{'Total':<20} {grand_total:>10.2f}")
+        print("-" * 30)
+        
+        
