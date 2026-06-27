@@ -1,4 +1,5 @@
-from expenses import add_expense, view_expenses, category_summary, monthly_report
+from expenses import add_expense
+from report import  view_expenses, category_summary, monthly_report
 
 def main():
     
