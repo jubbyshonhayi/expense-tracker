@@ -2,26 +2,27 @@ import csv
 from datetime import datetime
 from utils import ensure_csv_exists, CSV_FILE
 
-
+# record an expense
 def add_expense():
 
     """Collect an expense from the user and save it to the CSV file."""
 
+    # Headers
     ensure_csv_exists()
 
     date = datetime.now().strftime("%d-%m-%Y")
 
-    category = input("Category: ").strip().title()
+    category = input ("Category: ").strip().title()
 
     while not category:
         print("Category can not be empty")
-        category = input("Category: ").strip().title()
+        category = input ("Category: ").strip().title()
 
-    description = input("Description: ").strip()
+    description = input ("Description: ").strip()
 
     while not description:
-        print("description can not be empty!")
-        description = input("Description: ").strip()
+        print ("description can not be empty!")
+        description = input ("Description: ").strip()
     
     while True:
         try:
@@ -41,89 +42,219 @@ def add_expense():
         print("Expense added successfully!")
 
     except OSError:
-        print("Failed to add expense\n")
+        print("Error: Failed to add expense\n")
 
 
+# View all recorded expenses
 def view_expenses():
+    """Display all recorded expenses."""
+
+    TABLE_WIDTH = 75
+    expenses = []
 
     try:
-        print("\n=====EXPENSES=====\n")
-        
         with open(CSV_FILE, "r", encoding="utf-8") as file:
             reader = csv.reader(file)
+
+            # Skip the header row
             try:
                 next(reader)
+
             except StopIteration:
                 print("No expenses found.")
                 return
 
-            found_expenses = False
-
-            print(f"{'Date':<12} {'Category':<15} {'Description':<30} {'Amount':>10}")
-            print("-" * 70)
-            
             for row in reader:
 
-                if len(row) != 4: #handle a scenario where user(or even I) manually edited the csv
+                # Skip malformed rows (e.g., manually edited CSV)
+                if len(row) != 4:
                     continue
 
-                found_expenses = True
+                expenses.append(row)
 
-                print(f"{row[0]:<12} {row[1]:<15} {row[2]:<30} {float(row[3]):>10.2f}")
+        if not expenses:
+            print("No expenses found.")
+            return
 
-            if not found_expenses:
-                print("No Expenses found.")
+        # Print report headers
+        print("=" * TABLE_WIDTH)
+        print("ALL EXPENSES".center(TABLE_WIDTH))
+        print("=" * TABLE_WIDTH)
+        print(f"Total Expenses: {len(expenses)}\n")
+
+        print(f"{'Date':<12} {'Category':<15} {'Description':<35} {'Amount':>10}")
+        print("-" * TABLE_WIDTH)
+
+        for row in expenses:
+            print(f"{row[0]:<12} {row[1]:<15} {row[2]:<35} {float(row[3]):>10.2f}")
+
+        print()
+
+        # Calculate the total amount of all recorded expenses
+        grand_total = sum(float(row[3]) for row in expenses)
+
+        print("-" * TABLE_WIDTH)
+        print(f"{'TOTAL':<64} {grand_total:>11.2f}")
+        print("-" * TABLE_WIDTH)
 
     except OSError:
         print("Error: Unable to read expenses.csv.")
 
 
+# View expenses grouped by category
 def category_summary():
-     
-    """Display the total amount spent in each category"""
 
+    """Display the total amount spent in each category."""
+
+    TABLE_WIDTH = 30
     totals = {}
 
-    print("\n========CATEGORY SUMMARY=======\n")
+    try:
 
-    with open(CSV_FILE, "r", encoding="utf-8") as file:
-        reader = csv.reader(file)
-         
-        # skip the header
-        try:
-            next(reader)
-        except StopIteration:
-            print("No expenses found.")
-            return
+        with open(CSV_FILE, "r", encoding="utf-8") as file:
+            reader = csv.reader(file)
 
-        for row in reader:
+            # Skip the header row
+            try:
+                next(reader)
 
-            if len(row) != 4: #handle a scenario where user(or even I) manually edited the csv
-                continue
-    
-            category = row[1]
-            amount = float(row[3])
+            except StopIteration:
+                print("No expenses found.")
+                return
+            
+            for row in reader:
 
-            if category in totals:
-                totals[category] += amount
-            else:
-                totals[category] = amount
+                # Skip malformed rows (e.g., manually edited CSV)
+                if len(row) != 4:
+                    continue
+
+                # Store category and amount
+                category = row[1]
+                amount = float(row[3])
+
+                if category in totals:
+                    totals[category] += amount
+
+                else:
+                    totals[category] = amount
 
         if not totals:
-            print("No Categories found!")
+            print("No categories found.")
             return
         
+        # Print report headers
+        print("=" * TABLE_WIDTH)
+        print("CATEGORY SUMMARY".center(TABLE_WIDTH))
+        print("=" * TABLE_WIDTH)
+        print(f"\nTotal Categories: {len(totals)}\n")
         print(f"{'Category':<20} {'Amount':>10}")
-        print("-" *30)
-        
+        print("-" * TABLE_WIDTH)
+
         for category, total in sorted(totals.items()):
             print(f"{category:<20} {total:>10.2f}")
 
-        
+        print()
+
+        # Calculate the total amount spent across all categories
         grand_total = sum(totals.values())
 
-        print("-" * 30)
-        print(f"{'Total':<20} {grand_total:>10.2f}")
-        print("-" * 30)
+        print("-" * TABLE_WIDTH)
+        print(f"{'TOTAL':<20} {grand_total:>10.2f}")
+        print("-" * TABLE_WIDTH)
+
+    except OSError:
+        print("\nError: Unable to read expenses.csv.\n")
+
+
+
+def monthly_report():
+
+    """Display all expenses for a selected month and year."""
+    while True:
+        try:
+            month = int(input("Enter Month: "))
+            if 1 <= month <= 12:
+                break
+            print("Month must be between 1 and 12.")
+
+        except ValueError:
+            print("Please enter valid month.")
+
+    while True:
+        try:
+            year = int(input("Enter Year: "))
+            if 1900 <= year <= 2100:
+                break
+            print("Year must be between 1900 and 2100.")
+        except ValueError:
+            print("Please enter valid year.")
+
+    # Convert month number to month name
+    month_name = datetime(year, month, 1).strftime("%B")
+
+    TABLE_WIDTH = 75
+    monthly_expenses = []
+
+    try:
+
+        with open(CSV_FILE, "r", encoding="utf-8") as file:
+            reader = csv.reader(file)
+
+            # Skip the header row
+            try:
+                next(reader)
+
+            except StopIteration:
+                print("No data found")
+                return
+            
+            for row in reader:
+
+                # Skip malformed rows (e.g., manually edited CSV)
+                if len(row) != 4:
+                    continue
+
+                date = datetime.strptime(row[0], "%d-%m-%Y")
+                expense_month = date.month
+                expense_year = date.year
+
+                # Store expenses that match the selected month and year
+                if expense_month == month and expense_year == year:
+                    monthly_expenses.append(row)
+
+        if not monthly_expenses:
+            print("No expenses in this month.\n")
+            return
         
+        # Print report headers
+        print("=" * TABLE_WIDTH)
+        print("MONTHLY REPORT".center(TABLE_WIDTH))
+        print("=" * TABLE_WIDTH)
+        print(f"Period:         {month_name} {year}")
+        print(f"Total Expenses: {len(monthly_expenses)}\n")
+        print(f"{'Date':<12} {'Category':<15} {'Description':<35} {'Amount':>10}")
+        print("-" * TABLE_WIDTH)
+
+        for row in monthly_expenses:
+            print(f"{row[0]:<12} {row[1]:<15} {row[2]:<35} {float(row[3]):>10.2f}")
+
+        print()
+
+        # Calculate the total amount spent for the selected month
+        grand_total = sum(float(row[3]) for row in monthly_expenses)
+
+        print("-" * TABLE_WIDTH)
+
+        print(f"{'TOTAL':<64} {grand_total:>11.2f}")
+
+        print("-" * TABLE_WIDTH)
+
+
+    except OSError:
+        print("\nError: Unable to read expenses.csv.\n")
+
+
+            
+            
+
         
