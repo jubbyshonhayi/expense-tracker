@@ -1,5 +1,14 @@
 from expenses import add_expense
-from report import  view_expenses, category_summary, monthly_report
+
+from report import( 
+
+    view_expenses, 
+    category_summary,  
+    monthly_report_menu,
+    monthly_trends
+    )
+
+
 
 def main():
     
@@ -10,7 +19,8 @@ def main():
         print("2. View Expenses")
         print("3. Category Summary")
         print("4. Monthly Report")
-        print("5. Exit\n")
+        print("5. View Trends")
+        print("6. Exit\n")
         
         choice = input("Enter choice: ")
         
@@ -25,12 +35,15 @@ def main():
             category_summary()
 
         elif choice == "4":
-            monthly_report()
-            
+            monthly_report_menu()
+
         elif choice == "5":
+            monthly_trends()
+            
+        elif choice == "6":
             print("EXITING...")
             break
-        
+                    
         else:
             print("Invalid choice. Please try again.\n")
 

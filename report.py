@@ -124,36 +124,12 @@ def category_summary():
 
 
 
-def monthly_report():
+def monthly_report(month, year):
 
-    """Display all expenses for a selected month and year."""
+    """Display all expenses for the given month and year."""
 
     TABLE_WIDTH = 75
     monthly_expenses = []
-
-    while True:
-
-        try:
-            month = int(input("Enter Month: "))
-            if 1 <= month <= 12:
-                break
-            print("Month must be between 1 and 12.")
-
-        except ValueError:
-            print("Please enter valid month.")
-
-    while True:
-        try:
-            year = int(input("Enter Year: "))
-            if 1900 <= year <= 2100:
-                break
-            print("Year must be between 1900 and 2100.")
-
-        except ValueError:
-            print("Please enter valid year.")
-
-    # Convert month number to month name
-    month_name = datetime(year, month, 1).strftime("%B")
 
     try:
 
@@ -186,6 +162,9 @@ def monthly_report():
             print("No expenses in this month.\n")
             return
         
+        # Convert month number to month name
+        month_name = datetime(year, month, 1).strftime("%B")
+        
         # Print report headers
         print("=" * TABLE_WIDTH)
         print("MONTHLY REPORT".center(TABLE_WIDTH))
@@ -214,7 +193,76 @@ def monthly_report():
         print("\nError: Unable to read expenses.csv.\n")
 
 
-            
-            
+def monthly_report_menu():
 
+    """Prompt the user for a month and year, then display the monthly report"""
+    while True:
+
+        try:
+            month = int(input("Enter Month: "))
+            if 1 <= month <= 12:
+                break
+            print("Month must be between 1 and 12.")
+
+        except ValueError:
+            print("Please enter valid month.")
+
+    while True:
+        try:
+            year = int(input("Enter Year: "))
+            if 1900 <= year <= 2100:
+                break
+            print("Year must be between 1900 and 2100.")
+
+        except ValueError:
+            print("Please enter valid year.")
+
+
+    monthly_report(month, year)
+
+
+def monthly_trends():
+    """Display total expenses for each month ."""
+    
+    totals = {}
+
+
+    try:
+        with open(CSV_FILE, "r", encoding="utf-8") as file:
+            reader = csv.reader(file)
+
+            try:
+                next(reader)
+
+            except StopIteration:
+                print("No data found")
+                return
+            
+            for row in reader:
+
+                if len(row) != 4:
+                    continue
+
+                date = datetime.strptime(row[0], "%d-%m-%Y")
+
+                month_name = date.strftime("%B %Y")
+                amount = float(row[3])
+
+                if month_name in totals:
+                    totals[month_name] += amount
+
+                else:
+                    totals[month_name] = amount
+                
+
+            if not totals:
+                print("No monthly trends found.")
+                return
+            
+            print(totals)
+
+    except OSError:
+        print("Error: Unable to read expenses.csv")
+
+  
         
