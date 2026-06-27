@@ -69,7 +69,7 @@ def view_expenses():
                 # Skip malformed rows (e.g., manually edited CSV)
                 if len(row) != 4:
                     continue
-
+                
                 expenses.append(row)
 
         if not expenses:
@@ -170,7 +170,12 @@ def category_summary():
 def monthly_report():
 
     """Display all expenses for a selected month and year."""
+
+    TABLE_WIDTH = 75
+    monthly_expenses = []
+
     while True:
+
         try:
             month = int(input("Enter Month: "))
             if 1 <= month <= 12:
@@ -186,14 +191,12 @@ def monthly_report():
             if 1900 <= year <= 2100:
                 break
             print("Year must be between 1900 and 2100.")
+
         except ValueError:
             print("Please enter valid year.")
 
     # Convert month number to month name
     month_name = datetime(year, month, 1).strftime("%B")
-
-    TABLE_WIDTH = 75
-    monthly_expenses = []
 
     try:
 
