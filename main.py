@@ -5,8 +5,10 @@ from report import(
     view_expenses, 
     category_summary,  
     monthly_report_menu,
-    monthly_trends
+    
     )
+
+from trends import monthly_trends
 
 
 
