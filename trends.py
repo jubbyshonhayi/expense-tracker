@@ -42,6 +42,7 @@ def calculate_monthly_stats(rows):
         try:
             date = datetime.strptime(row[0], "%d-%m-%Y")
             amount = float(row[3])
+            
         except ValueError:
             continue
 
@@ -61,8 +62,19 @@ def calculate_monthly_stats(rows):
     return monthly_stats
 
 
-def display_monthly_dashboard(monthly_stats):
-    """Print formatted monthly analytics dashboard."""
+def get_monthly_stats():
+    """Read data and return monthly statistics"""
+
+    rows = read_monthly_data()
+
+    if not rows:
+        return {}
+    
+    return calculate_monthly_stats(rows)
+
+
+def display_monthly_trends(monthly_stats):
+    """Display formatted monthly trends report."""
 
     TABLE_WIDTH = 60
 
@@ -77,7 +89,7 @@ def display_monthly_dashboard(monthly_stats):
     grand_count = 0
 
     highest_month = None
-    highest_amount = 0
+    highest_amount = float("-inf")
 
     for key in sorted(monthly_stats.keys()):
         data = monthly_stats[key]
@@ -102,21 +114,17 @@ def display_monthly_dashboard(monthly_stats):
     print("INSIGHTS")
     print("-" * TABLE_WIDTH)
     print(f"Highest Spending Month : {highest_month}")
-    print(f"Average / Month         : {average:.2f}")
-    print(f"Months Recorded         : {months}")
+    print(f"Average Per Month      : {average:.2f}")
+    print(f"Months Recorded        : {months}")
     print("=" * TABLE_WIDTH)
 
 def monthly_trends():
     """Controller function for monthly analytics dashboard."""
 
-    rows = read_monthly_data()
-    if not rows:
-        return
-
-    monthly_stats = calculate_monthly_stats(rows)
+    monthly_stats = get_monthly_stats()
 
     if not monthly_stats:
         print("No monthly trends found.")
         return
 
-    display_monthly_dashboard(monthly_stats)
+    display_monthly_trends(monthly_stats)

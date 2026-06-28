@@ -4,12 +4,36 @@ from report import(
 
     view_expenses, 
     category_summary,  
-    monthly_report_menu,
-    
+    monthly_report_menu
+
     )
 
 from trends import monthly_trends
+from charts import monthly_chart
 
+def monthly_trends_menu():
+    """Display the monthly trends menu."""
+
+    while True:
+
+        print("\n====== MONTHLY TRENDS ======")
+        print("1. View Table")
+        print("2. View Chart")
+        print("3. Back\n")
+
+        choice = input("Enter choice: ")
+
+        if choice == "1":
+            monthly_trends()
+
+        elif choice == "2":
+            monthly_chart()
+
+        elif choice == "3":
+            break
+
+        else:
+            print("Invalid choice. Please try again.\n")
 
 
 def main():
@@ -21,7 +45,7 @@ def main():
         print("2. View Expenses")
         print("3. Category Summary")
         print("4. Monthly Report")
-        print("5. View Trends")
+        print("5. Monthly Trends")
         print("6. Exit\n")
         
         choice = input("Enter choice: ")
@@ -40,7 +64,8 @@ def main():
             monthly_report_menu()
 
         elif choice == "5":
-            monthly_trends()
+            monthly_trends_menu()
+
             
         elif choice == "6":
             print("EXITING...")
