@@ -1,9 +1,9 @@
 import csv
 from datetime import datetime
-from utils import  CSV_FILE
+from utils import CSV_FILE
 
 def read_monthly_data():
-    """Read and clean CSV data for monthly analytics."""
+    """Read and clean CgiSV data for monthly analytics."""
 
     rows = []
 
@@ -21,8 +21,11 @@ def read_monthly_data():
                 return    
 
             for row in reader:
+
+                # Skip malformed rows
                 if len(row) != 4:
                     continue
+
                 rows.append(row)
 
     except OSError:
@@ -42,7 +45,7 @@ def calculate_monthly_stats(rows):
         try:
             date = datetime.strptime(row[0], "%d-%m-%Y")
             amount = float(row[3])
-            
+
         except ValueError:
             continue
 
@@ -63,7 +66,7 @@ def calculate_monthly_stats(rows):
 
 
 def get_monthly_stats():
-    """Read data and return monthly statistics"""
+    """Read data and return monthly statistics."""
 
     rows = read_monthly_data()
 

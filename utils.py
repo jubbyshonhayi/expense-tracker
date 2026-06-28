@@ -2,6 +2,7 @@ import csv
 import os
 
 CSV_FILE = "expenses.csv"
+REPORTS_DIR = "reports"
 
 HEADERS = [
     "Date",
@@ -22,3 +23,4 @@ def ensure_csv_exists():
             
         except OSError:
             print("Erro: Could not create expenses.csv file")
+

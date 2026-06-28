@@ -1,6 +1,7 @@
 import csv
+import os
 from datetime import datetime
-from utils import  CSV_FILE
+from utils import  CSV_FILE, REPORTS_DIR
 
 # View all recorded expenses
 def view_expenses():
@@ -158,13 +159,17 @@ def monthly_report(month, year):
                 if expense_month == month and expense_year == year:
                     monthly_expenses.append(row)
 
+            # Convert month number to month name
+            
         if not monthly_expenses:
             print("No expenses in this month.\n")
             return
         
+    
         # Convert month number to month name
         month_name = datetime(year, month, 1).strftime("%B")
-        
+        save_monthly_report(monthly_expenses ,month, month_name, year)
+
         # Print report headers
         print("=" * TABLE_WIDTH)
         print("MONTHLY REPORT".center(TABLE_WIDTH))
@@ -191,6 +196,50 @@ def monthly_report(month, year):
 
     except OSError:
         print("\nError: Unable to read expenses.csv.\n")
+
+
+def save_monthly_report(monthly_expenses, month, month_name, year):
+
+    """Save the monthly report as a formatted text file."""
+
+    os.makedirs(REPORTS_DIR, exist_ok=True)
+
+    filename = f"{REPORTS_DIR}/Monthly_Report_{year}-{month:02d}.txt"
+
+    try:
+        with open(filename, "w", encoding="utf-8") as file:
+            TABLE_WIDTH = 75
+            file.write("=" * TABLE_WIDTH + "\n")
+            file.write("MONTHLY REPORT".center(TABLE_WIDTH) + "\n")
+            file.write("=" * TABLE_WIDTH + "\n")
+
+            file.write(f"Period:         {month_name} {year}\n")
+            file.write(f"Total Expenses: {len(monthly_expenses)}\n\n")
+
+            file.write(f"{'Date':<12} {'Category':<15} {'Description':<35} {'Amount':>10}\n")
+            file.write("-" * TABLE_WIDTH + "\n")
+
+            for row in monthly_expenses:
+                
+                file.write(
+                    f"{row[0]:<12} "
+                    f"{row[1]:<15} "
+                    f"{row[2]:<35} "
+                    f"{float(row[3]):>10.2f}\n"
+                )
+            
+        
+            # Calculate the total amount spent for the selected month
+            grand_total = sum(float(row[3]) for row in monthly_expenses)
+
+            file.write("-" * TABLE_WIDTH + "\n")
+            file.write(f"{'TOTAL':<64} {grand_total:>11.2f}\n")
+            file.write("-" * TABLE_WIDTH + "\n")   
+        
+        print(f"Monthly report saved to {filename}\n")
+
+    except OSError:
+        print("Error. Unable to write monthly report")
 
 
 def monthly_report_menu():
