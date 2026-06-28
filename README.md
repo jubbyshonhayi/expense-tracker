@@ -1,137 +1,115 @@
-Automated Expense Tracker
+# Automated Expense Tracker
 
-A Python-based command-line application for tracking personal expenses using CSV file storage. The project demonstrates file handling, data aggregation, automation, modular programming, and data visualization.
+A command-line expense tracking application built with Python. The project allows users to record expenses, generate reports, visualize spending trends, and automate monthly report generation.
 
-⸻
+---
 
-Features
+## Features
 
-* Add new expenses
-* View all recorded expenses
-* View category-wise spending summary
-* Generate monthly expense reports
-* View monthly spending trends in a formatted table
-* Visualize monthly spending using line charts (Matplotlib)
-* Automatically generate monthly reports using scheduling
-* Handles invalid input and malformed CSV records gracefully
+### Expense Management
 
-⸻
+- Add new expenses
+- Store expenses in a CSV file
+- Input validation
+- Automatic CSV creation
 
-Technologies Used
+### Reports
 
-* Python 3
-* CSV
-* Datetime
-* Matplotlib
-* Schedule
+- View all recorded expenses
+- Category summary
+- Monthly reports
+- Export monthly reports as formatted text files
 
-⸻
+### Analytics
 
-Project Structure
+- Monthly spending trends
+- Total monthly expenses
+- Average monthly spending
+- Highest spending month
+- Number of recorded months
 
-expense-tracker/
+### Charts
+
+- Monthly spending visualization using Matplotlib
+
+### Automation
+
+- Automatic monthly report generation using the `schedule` library.
+
+---
+
+## Project Structure
+
+```text
+ExpenseTracker/
 │
-├── main.py            # Application entry point and menus
-├── expenses.py        # Add expenses
-├── report.py          # Expense reports and summaries
-├── trends.py          # Monthly analytics and insights
-├── charts.py          # Data visualization using Matplotlib
-├── automation.py      # Scheduled monthly report generation
-├── utils.py           # Shared helper functions and constants
-├── expenses.csv       # Expense database
-└── README.md
+├── main.py
+├── expenses.py
+├── report.py
+├── trends.py
+├── charts.py
+├── automation.py
+├── utils.py
+├── expenses.csv
+├── README.md
+└── reports/
+```
 
-⸻
+---
 
-Installation
+## Technologies Used
 
-Clone the repository:
+- Python 3
+- CSV
+- datetime
+- os
+- Matplotlib
+- schedule
 
-git clone <repository-url>
-cd expense-tracker
+---
+
+## Running the Project
 
 Install the required packages:
 
+```bash
 pip install matplotlib schedule
+```
 
-⸻
+Run the application:
 
-Running the Application
-
-Start the application with:
-
+```bash
 python main.py
+```
 
-⸻
+---
 
-Application Menu
+## Concepts Practiced
 
-====== EXPENSE TRACKER ======
-1. Add Expense
-2. View Expenses
-3. Category Summary
-4. Monthly Report
-5. Monthly Trends
-6. Exit
+- File handling
+- CSV processing
+- Exception handling
+- Data aggregation
+- Modular programming
+- Automation
+- Data visualization
+- Git and GitHub
 
-The Monthly Trends menu provides:
+---
 
-* View monthly trends in a table
-* View monthly spending as a line chart
+## Future Improvements
 
-⸻
+- Overspending alerts
+- Budget tracking
+- Yearly analytics
+- Category charts
+- Search and filter
+- Expense editing and deletion
+- PDF/Excel report export
+- Database integration
 
-Sample Monthly Trends Output
+---
 
-============================================================
-                     MONTHLY TRENDS
-============================================================
-Month                   Expenses              Amount
-------------------------------------------------------------
-June 2026                      8             1240.00
-July 2026                     10             1585.50
-------------------------------------------------------------
-TOTAL                         18             2825.50
-------------------------------------------------------------
-INSIGHTS
-------------------------------------------------------------
-Highest Spending Month : July 2026
-Average Per Month      : 1412.75
-Months Recorded        : 2
-============================================================
-
-⸻
-
-Learning Objectives
-
-This project demonstrates practical experience with:
-
-* File handling using CSV
-* Functions and modular programming
-* Error handling
-* Dictionaries and data aggregation
-* Date and time processing
-* Data visualization with Matplotlib
-* Basic automation using scheduled tasks
-* Software refactoring and separation of concerns
-
-⸻
-
-Future Improvements
-
-* Overspending alerts
-* Category spending charts
-* Export reports to PDF
-* Excel file support
-* Budget tracking
-* Search and filter expenses
-* Graphical User Interface (GUI)
-* Database integration (SQLite/PostgreSQL)
-
-⸻
-
-Author
+## Author
 
 Jubilant Shonhayi
-
-Built as part of a Python software development learning journey focused on writing clean, modular, and maintainable code.
