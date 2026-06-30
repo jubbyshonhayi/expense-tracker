@@ -3,6 +3,7 @@ import os
 
 CSV_FILE = "expenses.csv"
 REPORTS_DIR = "reports"
+MONTHLY_BUDGET = 1000
 
 HEADERS = [
     "Date",

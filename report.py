@@ -1,7 +1,7 @@
 import csv
 import os
 from datetime import datetime
-from utils import  CSV_FILE, REPORTS_DIR
+from utils import  CSV_FILE, REPORTS_DIR, MONTHLY_BUDGET
 
 # View all recorded expenses
 def view_expenses():
@@ -124,6 +124,14 @@ def category_summary():
         print("\nError: Unable to read expenses.csv.\n")
 
 
+def detect_overspending(grand_total):
+    """Check whether monthly budget has been exceeded"""
+
+    if grand_total > MONTHLY_BUDGET:
+        return True, grand_total - MONTHLY_BUDGET
+    
+    return False, MONTHLY_BUDGET - grand_total
+
 
 def monthly_report(month, year):
 
@@ -159,7 +167,6 @@ def monthly_report(month, year):
                 if expense_month == month and expense_year == year:
                     monthly_expenses.append(row)
 
-            # Convert month number to month name
             
         if not monthly_expenses:
             print("No expenses in this month.\n")
@@ -168,8 +175,7 @@ def monthly_report(month, year):
     
         # Convert month number to month name
         month_name = datetime(year, month, 1).strftime("%B")
-        save_monthly_report(monthly_expenses ,month, month_name, year)
-
+        
         # Print report headers
         print("=" * TABLE_WIDTH)
         print("MONTHLY REPORT".center(TABLE_WIDTH))
@@ -187,18 +193,36 @@ def monthly_report(month, year):
         # Calculate the total amount spent for the selected month
         grand_total = sum(float(row[3]) for row in monthly_expenses)
 
+        overspending, amount = detect_overspending(grand_total)
+
         print("-" * TABLE_WIDTH)
 
         print(f"{'TOTAL':<64} {grand_total:>11.2f}")
 
         print("-" * TABLE_WIDTH)
 
+        # Add overspending section
+        print("\nBUDGET SUMMARY\n")
+        print("-" * TABLE_WIDTH + "\n")
+        print(f"Budget:             {MONTHLY_BUDGET:.2f}\n")
+
+        if overspending:
+            print(f"Status:             OVER BUDGET")
+            print(f"Exceeded By:        {amount:.2f}")
+
+        else:
+            print(f"Status:             WITHIN BUDGET")
+            print(f"Remaining:          {amount:.2f}")
+
+        print("-" * TABLE_WIDTH)
+
+        save_monthly_report(monthly_expenses ,month, month_name, year, grand_total, overspending, amount)
 
     except OSError:
         print("\nError: Unable to read expenses.csv.\n")
 
-
-def save_monthly_report(monthly_expenses, month, month_name, year):
+        
+def save_monthly_report(monthly_expenses, month, month_name, year, grand_total, overspending, amount):
 
     """Save the monthly report as a formatted text file."""
 
@@ -227,14 +251,25 @@ def save_monthly_report(monthly_expenses, month, month_name, year):
                     f"{row[2]:<35} "
                     f"{float(row[3]):>10.2f}\n"
                 )
-            
-        
-            # Calculate the total amount spent for the selected month
-            grand_total = sum(float(row[3]) for row in monthly_expenses)
 
             file.write("-" * TABLE_WIDTH + "\n")
             file.write(f"{'TOTAL':<64} {grand_total:>11.2f}\n")
-            file.write("-" * TABLE_WIDTH + "\n")   
+            file.write("-" * TABLE_WIDTH + "\n") 
+            
+            # Add overspending section
+            file.write("\nBUDGET SUMMARY\n")
+            file.write("-" * TABLE_WIDTH + "\n")
+            file.write(f"Budget:          {MONTHLY_BUDGET:.2f}\n")
+
+            if overspending:
+                file.write(f"Status:          OVER BUDGET \n")
+                file.write(f"Exceeded By:     {amount:.2f} \n")
+
+            else:
+                file.write(f"Status:          WITHIN BUDGET\n")
+                file.write(f"Remaining:       {amount:.2f}\n")
+
+            file.write("-" * TABLE_WIDTH + "\n")
         
         print(f"Monthly report saved to {filename}\n")
 
@@ -268,5 +303,5 @@ def monthly_report_menu():
 
 
     monthly_report(month, year)
-
-
+    
+    
